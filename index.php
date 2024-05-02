@@ -20,7 +20,7 @@
                 list($tareaTexto, $completada) = $parts;
                 echo '<input type="checkbox" name="tareas_completadas[]" value="' . $index . '"';
                 if ($completada == "completada") {
-                    echo ' checked';
+                    echo ' checked disabled';
                 }
                 echo '>' . $tareaTexto . '<br>';
             }
