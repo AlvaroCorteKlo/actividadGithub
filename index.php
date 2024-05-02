@@ -1,38 +1,48 @@
 <!DOCTYPE html>
-<html lang="es">
+<html>
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Lista de Tareas</title>
 </head>
 <body>
-    <h1>Lista de Tareas</h1>
-    <h2>Tareas Pendientes</h2>
-    <ul>
-        <?php
-        // Mostrar tareas pendientes
-        $tareas = file("tareas.txt", FILE_IGNORE_NEW_LINES);
-        foreach ($tareas as $tarea) {
-            $datos = explode("|", $tarea);
-            if ($datos[0] == "P") {
-                echo "<li>$datos[1]</li>";
-            }
+
+<h1>Lista de Tareas</h1>
+
+<?php
+// Función para resaltar tareas pendientes
+function resaltarPendientes($tarea) {
+    list($tareaTexto, $completada) = explode("|", $tarea);
+    if ($completada == "pendiente") {
+        return '<strong>' . $tareaTexto . '</strong>';
+    } else {
+        return $tareaTexto;
+    }
+}
+
+// Leer el archivo de tareas
+$tareas = file("tareas.txt", FILE_IGNORE_NEW_LINES);
+
+// Mostrar las tareas
+foreach ($tareas as $tarea) {
+    echo resaltarPendientes($tarea) . '<br>';
+}
+?>
+
+<form action="completar.php" method="post">
+    <?php
+    // Mostrar checkbox para completar tareas
+    foreach ($tareas as $index => $tarea) {
+        list($tareaTexto, $completada) = explode("|", $tarea);
+        echo '<input type="checkbox" name="tareas_completadas[]" value="' . $index . '"';
+        if ($completada == "completada") {
+            echo ' checked';
         }
-        ?>
-    </ul>
-    <h2>Tareas Completadas</h2>
-    <ul>
-        <?php
-        // Mostrar tareas completadas
-        foreach ($tareas as $tarea) {
-            $datos = explode("|", $tarea);
-            if ($datos[0] == "C") {
-                echo "<li>$datos[1]</li>";
-            }
-        }
-        ?>
-    </ul>
-    <a href="agregar.php">Agregar Nueva Tarea</a>
-    <a href="completar.php">Marcar Tarea como Completada</a>
+        echo '>' . $tareaTexto . '<br>';
+    }
+    ?>
+    <button type="submit">Marcar como completadas</button>
+</form>
+
+<a href="agregar.php">Agregar nueva tarea</a>
+
 </body>
 </html>
