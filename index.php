@@ -7,36 +7,26 @@
 
 <h1>Lista de Tareas</h1>
 
-<?php
-// Función para resaltar tareas pendientes
-function resaltarPendientes($tarea) {
-    list($tareaTexto, $completada) = explode("|", $tarea);
-    if ($completada == "pendiente") {
-        return '<strong>' . $tareaTexto . '</strong>';
-    } else {
-        return $tareaTexto;
-    }
-}
-
-// Leer el archivo de tareas
-$tareas = file("tareas.txt", FILE_IGNORE_NEW_LINES);
-
-// Mostrar las tareas
-foreach ($tareas as $tarea) {
-    echo resaltarPendientes($tarea) . '<br>';
-}
-?>
-
 <form action="completar.php" method="post">
     <?php
-    // Mostrar checkbox para completar tareas
-    foreach ($tareas as $index => $tarea) {
-        list($tareaTexto, $completada) = explode("|", $tarea);
-        echo '<input type="checkbox" name="tareas_completadas[]" value="' . $index . '"';
-        if ($completada == "completada") {
-            echo ' checked';
+    // Leer el archivo de tareas
+    $tareas = file("tareas.txt", FILE_IGNORE_NEW_LINES);
+
+    if ($tareas !== false) {
+        foreach ($tareas as $index => $tarea) {
+            // Verificar el formato de la tarea antes de intentar acceder a sus partes
+            $parts = explode("|", $tarea);
+            if (count($parts) == 2) {
+                list($tareaTexto, $completada) = $parts;
+                echo '<input type="checkbox" name="tareas_completadas[]" value="' . $index . '"';
+                if ($completada == "completada") {
+                    echo ' checked';
+                }
+                echo '>' . $tareaTexto . '<br>';
+            }
         }
-        echo '>' . $tareaTexto . '<br>';
+    } else {
+        echo "No se pudo leer el archivo de tareas.";
     }
     ?>
     <button type="submit">Marcar como completadas</button>
